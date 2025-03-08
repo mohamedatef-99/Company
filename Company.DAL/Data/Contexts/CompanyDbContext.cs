@@ -11,7 +11,7 @@ namespace Company.DAL.Data.Contexts
 {
     public class CompanyDbContext : DbContext
     {
-        public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base()
+        public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base(options)
         {
             
         }

@@ -1,3 +1,4 @@
+using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,10 @@ namespace Company.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<DepartmentRepository>(); // Allow DI for DepartmentRepository
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); // Allow DI for DepartmentRepository
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
-                options.UseSqlServer("Server = .; Database = CompanyDbMVC; Trusted_Connection = True; TrustServerCertificate = True;");
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI for CompanyDbContext
 
             var app = builder.Build();
