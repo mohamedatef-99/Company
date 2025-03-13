@@ -49,21 +49,23 @@ namespace Company.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public IActionResult Details(int? id, string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");
             var department = _departmentRepository.Get(id.Value);
             if (department is null) return NotFound(new { statusCode = 404, message = "Department Not Found" });
-            return View(department);
+            return View(viewName, department);
         }
 
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id is null) return BadRequest("Invalid Id");
-            var department = _departmentRepository.Get(id.Value);
-            if (department is null) return NotFound(new { statusCode = 404, message = "Department Not Found" });
-            return View(department);
+            //if (id is null) return BadRequest("Invalid Id");
+            //var department = _departmentRepository.Get(id.Value);
+            //if (department is null) return NotFound(new { statusCode = 404, message = "Department Not Found" });
+            
+            
+            return Details(id, "Edit");
         }
 
         [HttpPost]
@@ -85,6 +87,31 @@ namespace Company.PL.Controllers
                     }
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            //if (id is null) return BadRequest("Invalid Id");
+            //var department = _departmentRepository.Get(id.Value);
+            //if (department is null) return NotFound(new { statusCode = 404, message = "Department Not Found" });
+            return Details(id, "Delete");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete([FromRoute] int id, Department department)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id != department.Id) return BadRequest("Invalid Id");
+                var count = _departmentRepository.Delete(department);
+                if (count > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            return View(department);
         }
     }
 }
