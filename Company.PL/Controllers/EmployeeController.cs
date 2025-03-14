@@ -66,17 +66,47 @@ namespace Company.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            return Details(id, "Edit");
+            if (id is null) return BadRequest("Invalid Id");
+            var employee = _employeetRepository.Get(id.Value);
+            if (employee is null) return NotFound(new { StatusCode = 404, message = $"Employee Not found" });
+            var employeeDto = new CreateEmployeeDto()
+            {
+                Name = employee.Name,
+                Address = employee.Address,
+                Age = employee.Age,
+                CreateAt = employee.CreateAt,
+                HiringDate = employee.HiringDate,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+                IsActive = employee.IsActive,
+                IsDeleted = employee.IsDeleted,
+
+            };
+            return View(employeeDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee model)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != model.Id) return BadRequest();
-                var count = _employeetRepository.Update(model);
+                //if (id != model.Id) return BadRequest();
+                var employee = new Employee()
+                {
+                    Id = id,
+                    Name = model.Name,
+                    Address = model.Address,
+                    Age = model.Age,
+                    CreateAt = model.CreateAt,
+                    HiringDate = model.HiringDate,
+                    Phone = model.Phone,
+                    Salary = model.Salary,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+
+                };
+                var count = _employeetRepository.Update(employee);
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
