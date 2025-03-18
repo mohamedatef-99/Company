@@ -19,6 +19,12 @@ namespace Company.PL.Controllers
         public IActionResult Index()
         {
             var Employees = _employeetRepository.GetAll();
+            // Dictionary : 3 Property
+            // 1. ViewData : Transfer Extra Information from controller (Action) to View
+            //ViewData["Message"] = "Hello From ViewData";
+
+            // 2. ViewBag: Transfer Extra Information from controller to view
+            ViewBag.Message = "Hello from viewBag";
             return View(Employees);
         }
         [HttpGet]
@@ -48,6 +54,7 @@ namespace Company.PL.Controllers
                 var count = _employeetRepository.Add(employee);
                 if (count > 0)
                 {
+                    TempData["Message"] = "Employee is Created !!";
                     return RedirectToAction("Index");
                 }
             }
