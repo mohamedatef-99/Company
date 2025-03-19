@@ -18,16 +18,24 @@ namespace Company.PL.Controllers
         }
 
         [HttpGet] // GET: Employee/Index
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
-            var Employees = _employeetRepository.GetAll();
+            IEnumerable<Employee> employees;
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = _employeetRepository.GetAll();
+            }
+            else
+            {
+                employees = _employeetRepository.GetByName(SearchInput);
+            }
             // Dictionary : 3 Property
             // 1. ViewData : Transfer Extra Information from controller (Action) to View
             //ViewData["Message"] = "Hello From ViewData";
 
             // 2. ViewBag: Transfer Extra Information from controller to view
-            ViewBag.Message = "Hello from viewBag";
-            return View(Employees);
+            //ViewBag.Message = "Hello from viewBag";
+            return View(employees);
         }
         [HttpGet]
         public IActionResult Create()
