@@ -1,6 +1,7 @@
 using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Data.Contexts;
+using Company.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.PL
@@ -19,6 +20,15 @@ namespace Company.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI for CompanyDbContext
+
+            // Life Time
+            // builder.Services.AddScoped();  // Create Object Life Time Per Request  - UnReachable Object
+            // builder.Services.AddTransient();  // Create Object Life Time Per Operation
+            // builder.Services.AddSingleton();  // Create Object Life Time Per App
+
+            builder.Services.AddScoped<IScopedSerivces, ScopedService>(); // Per Request
+            builder.Services.AddTransient<ITransientService, TransientService>(); // Per Operation
+            builder.Services.AddSingleton<ISingletionService, SingletonService>(); // Per Application
 
             var app = builder.Build();
 
