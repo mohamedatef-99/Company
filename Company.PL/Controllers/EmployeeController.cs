@@ -1,4 +1,5 @@
-﻿using Company.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Models;
 using Company.PL.Dtos;
@@ -10,11 +11,13 @@ namespace Company.PL.Controllers
     {
         private readonly IEmployeeRepository _employeetRepository;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository, IMapper mapper)
         {
             _employeetRepository = employeeRepository;
             _departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
 
         [HttpGet] // GET: Employee/Index
@@ -50,20 +53,22 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var employee = new Employee()
-                {
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Phone = model.Phone,
-                    Salary = model.Salary,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    DepartmentId = model.DepartmentId
+                // Manual Mapping
+                //var employee = new Employee()
+                //{
+                //    Name = model.Name,
+                //    Address = model.Address,
+                //    Age = model.Age,
+                //    CreateAt = model.CreateAt,
+                //    HiringDate = model.HiringDate,
+                //    Phone = model.Phone,
+                //    Salary = model.Salary,
+                //    IsActive = model.IsActive,
+                //    IsDeleted = model.IsDeleted,
+                //    DepartmentId = model.DepartmentId
 
-                };
+                //};
+                var employee = _mapper.Map<Employee>(model);
                 var count = _employeetRepository.Add(employee);
                 if (count > 0)
                 {
@@ -91,7 +96,8 @@ namespace Company.PL.Controllers
             if (id is null) return BadRequest("Invalid Id");
             var employee = _employeetRepository.Get(id.Value);
             if (employee is null) return NotFound(new { StatusCode = 404, message = $"Employee Not found" });
-            return View(employee);
+            var dto = _mapper.Map<CreateEmployeeDto>(employee);
+            return View(dto);
         }
 
         [HttpPost]

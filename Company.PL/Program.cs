@@ -1,6 +1,7 @@
 using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Data.Contexts;
+using Company.PL.Mapping;
 using Company.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,9 @@ namespace Company.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI for CompanyDbContext
+
+            //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
             // Life Time
             // builder.Services.AddScoped();  // Create Object Life Time Per Request  - UnReachable Object

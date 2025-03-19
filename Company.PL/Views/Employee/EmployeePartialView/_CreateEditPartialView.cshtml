@@ -5,7 +5,7 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@model Employee
+@model CreateEmployeeDto
 
 @{
     var Departments = new SelectList(ViewData["departments"] as IEnumerable<Department>, "Id", "Name" );
