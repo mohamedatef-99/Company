@@ -3,6 +3,7 @@ using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Models;
 using Company.PL.Dtos;
+using Company.PL.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.PL.Controllers
@@ -74,6 +75,12 @@ namespace Company.PL.Controllers
                 //    DepartmentId = model.DepartmentId
 
                 //};
+
+                if(model.Image is not null)
+                {
+                   model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
+
                 var employee = _mapper.Map<Employee>(model);
                 _unitOfWork.EmployeeRepository.Add(employee);
                 var count = _unitOfWork.Complete();
@@ -109,7 +116,7 @@ namespace Company.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee model)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model, string viewName = "Edit")
         {
             if (ModelState.IsValid)
             {
@@ -128,9 +135,19 @@ namespace Company.PL.Controllers
                 //    IsDeleted = model.IsDeleted,
 
                 //};
-                    if (id != model.Id) return BadRequest();
-                     _unitOfWork.EmployeeRepository.Update(model);
-                    var count = _unitOfWork.Complete();
+                if(model.ImageName is not null && model.Image is not null)
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "images");
+                }
+                if(model.Image is not null)
+                {
+                   model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
+
+                var employee = _mapper.Map<Employee>(model);
+                employee.Id = id;
+                _unitOfWork.EmployeeRepository.Update(employee);
+                var count = _unitOfWork.Complete();
 
                 if (count > 0)
                     {
@@ -149,16 +166,22 @@ namespace Company.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Employee model)
+        public IActionResult Delete([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != model.Id) return BadRequest("Invalid Id");
-                 _unitOfWork.EmployeeRepository.Delete(model);
+                //if (id != model.Id) return BadRequest("Invalid Id");
+                var employee = _mapper.Map<Employee>(model);
+                employee.Id = id;
+                 _unitOfWork.EmployeeRepository.Delete(employee);
                 var count = _unitOfWork.Complete();
 
                 if (count > 0)
                 {
+                    if(model.ImageName is not null)
+                    {
+                        DocumentSettings.DeleteFile(model.ImageName, "images");
+                    }
                     return RedirectToAction("Index");
                 }
             }

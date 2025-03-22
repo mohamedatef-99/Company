@@ -11,7 +11,7 @@
 
             //var folerPath = Directory.GetCurrentDirectory() + "\\wwwroot\\files\\" + folderName;
 
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory() + @"wwwroot\files", folderName);
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory() + @"\\wwwroot\files", folderName);
 
             // 2. Get File Name and make it unique
 
