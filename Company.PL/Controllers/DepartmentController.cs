@@ -9,17 +9,22 @@ namespace Company.PL.Controllers
     // MVC Controller 
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(
+            //IDepartmentRepository departmentRepository
+            IUnitOfWork unitOfWork
+            )
         {
-            _departmentRepository = departmentRepository;
+            //_departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet] // GET: Department/Index
         public IActionResult Index()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             return View(departments);
         }
         [HttpGet]
@@ -39,7 +44,9 @@ namespace Company.PL.Controllers
                     Name = model.Name,
                     CreateAt = model.CreateAt
                 };
-                var count = _departmentRepository.Add(department);
+                 _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.Complete();
+
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
@@ -52,7 +59,7 @@ namespace Company.PL.Controllers
         public IActionResult Details(int? id, string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");
-            var department = _departmentRepository.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
             if (department is null) return NotFound(new { statusCode = 404, message = "Department Not Found" });
             return View(viewName, department);
         }
@@ -80,8 +87,10 @@ namespace Company.PL.Controllers
                     Code = model.Code,
                     CreateAt = model.CreateAt
                 };
-                    var count = _departmentRepository.Update(department);
-                    if (count > 0)
+                     _unitOfWork.DepartmentRepository.Update(department);
+                var count = _unitOfWork.Complete();
+
+                if (count > 0)
                     {
                         return RedirectToAction("Index");
                     }
@@ -105,7 +114,9 @@ namespace Company.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (id != department.Id) return BadRequest("Invalid Id");
-                var count = _departmentRepository.Delete(department);
+                _unitOfWork.DepartmentRepository.Delete(department);
+                var count = _unitOfWork.Complete();
+
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
