@@ -41,6 +41,11 @@ namespace Company.PL
             builder.Services.AddSingleton<ISingletionService, SingletonService>(); // Per Application
             builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<CompanyDbContext>();
 
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SignIn";
+
+            });
 
             var app = builder.Build();
 
@@ -56,6 +61,9 @@ namespace Company.PL
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
