@@ -1,0 +1,22 @@
+﻿@using Company.DAL.Models
+@using Company.PL.Dtos
+@model UserToReturn
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete Employee</h1>
+<br />
+<br />
+<br />
+<br />
+
+<form asp-action="Delete">
+    <partial name="EmployeePartialView/DeleteDetailsPartialView" />
+
+    <div class="my-3">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-light">Back To List</a>
+    </div>
+</form>
+

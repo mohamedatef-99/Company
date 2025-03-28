@@ -1,0 +1,28 @@
+﻿@using Company.DAL.Models
+@using Company.PL.Dtos
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model UserToReturn
+
+<div class="my-3">
+    <label asp-for="UserName" class="col-form-label"></label>
+    <input asp-for="UserName" class="form-control" readonly />
+</div>
+<div class="my-3">
+    <label asp-for="FirstName" class="col-form-label"></label>
+    <input asp-for="FirstName" class="form-control" readonly />
+
+</div>
+<div class="my-3">
+    <label asp-for="LastName" class="col-form-label"></label>
+    <input asp-for="LastName" class="form-control" readonly />
+
+</div>
+<div class="my-3">
+    <label asp-for="Email" class="col-form-label"></label>
+    <input asp-for="Email" class="form-control" readonly />
+
+</div>
