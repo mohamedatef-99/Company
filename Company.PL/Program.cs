@@ -39,7 +39,9 @@ namespace Company.PL
             builder.Services.AddScoped<IScopedSerivces, ScopedService>(); // Per Request
             builder.Services.AddTransient<ITransientService, TransientService>(); // Per Operation
             builder.Services.AddSingleton<ISingletionService, SingletonService>(); // Per Application
-            builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<CompanyDbContext>();
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<CompanyDbContext>()
+                .AddDefaultTokenProviders(); ;
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
